@@ -40,7 +40,7 @@ Review note: the account secrets leave the phone only towards the user's own wat
 
 **Permissions:** `Communications`, for receiving accounts from the phone app.
 
-**Privacy policy:** https://lucanicoletti.github.io/wristotp/privacy
+**Privacy policy:** https://lucanicoletti.github.io/wristotp-site/privacy
 
 ## Privacy manifest (iOS)
 

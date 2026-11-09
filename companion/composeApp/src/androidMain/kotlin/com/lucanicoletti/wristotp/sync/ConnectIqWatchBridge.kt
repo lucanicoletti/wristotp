@@ -5,11 +5,13 @@ import com.garmin.android.connectiq.ConnectIQ
 import com.garmin.android.connectiq.IQApp
 import com.garmin.android.connectiq.IQDevice
 import kotlin.coroutines.resume
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 class ConnectIqWatchBridge(
     private val context: Context,
@@ -115,13 +117,15 @@ class ConnectIqWatchBridge(
     }
 
     private suspend fun sendMessage(target: IQDevice, targetApp: IQApp, payload: Any): ConnectIQ.IQMessageStatus =
-        suspendCancellableCoroutine { continuation ->
-            runCatching {
-                connectIQ.sendMessage(target, targetApp, payload) { _, _, status ->
-                    if (continuation.isActive) continuation.resume(status)
+        withContext(Dispatchers.IO) {
+            suspendCancellableCoroutine { continuation ->
+                runCatching {
+                    connectIQ.sendMessage(target, targetApp, payload) { _, _, status ->
+                        if (continuation.isActive) continuation.resume(status)
+                    }
+                }.onFailure {
+                    if (continuation.isActive) continuation.resume(ConnectIQ.IQMessageStatus.FAILURE_UNKNOWN)
                 }
-            }.onFailure {
-                if (continuation.isActive) continuation.resume(ConnectIQ.IQMessageStatus.FAILURE_UNKNOWN)
             }
         }
 

@@ -49,8 +49,8 @@ import com.lucanicoletti.wristotp.sync.SyncViewModel
 import com.lucanicoletti.wristotp.sync.WatchEdition
 import com.lucanicoletti.wristotp.sync.WatchState
 
-private const val PRIVACY_URL = "https://lucanicoletti.github.io/wristotp/privacy"
-private const val SUPPORT_URL = "https://lucanicoletti.github.io/wristotp/support"
+private const val PRIVACY_URL = "https://lucanicoletti.github.io/wristotp-site/privacy"
+private const val SUPPORT_URL = "https://lucanicoletti.github.io/wristotp-site/support"
 
 @Composable
 fun MainScreen(viewModel: SyncViewModel) {

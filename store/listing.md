@@ -1,8 +1,8 @@
 # Store listings
 
 Links used in every listing:
-- **Privacy policy:** https://lucanicoletti.github.io/wristotp/privacy
-- **Support:** https://lucanicoletti.github.io/wristotp/support
+- **Privacy policy:** https://lucanicoletti.github.io/wristotp-site/privacy
+- **Support:** https://lucanicoletti.github.io/wristotp-site/support
 - **Contact email:** luca.nicolett@gmail.com
 
 ## Connect IQ Store: WristOTP (paid)
@@ -33,7 +33,7 @@ Supports TOTP with SHA-1 and SHA-256. SHA-512 and counter-based (HOTP) accounts 
 
 **Refunds** follow the Connect IQ Store policy (within 48 hours of purchase).
 
-Support: luca.nicolett@gmail.com · https://lucanicoletti.github.io/wristotp/support
+Support: luca.nicolett@gmail.com · https://lucanicoletti.github.io/wristotp-site/support
 
 WristOTP isn't affiliated with Google or Garmin. Google Authenticator is a trademark of Google LLC; Garmin and Connect IQ are trademarks of Garmin Ltd.
 

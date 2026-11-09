@@ -14,10 +14,10 @@ class PinView extends WatchUi.View {
 
     private const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "del", "0", "ok"] as Array<String>;
     private const BUTTON_KEYS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "del", "ok"] as Array<String>;
-    private const GRID_LEFT = 0.19;
-    private const GRID_TOP = 0.32;
-    private const GRID_WIDTH = 0.62;
-    private const GRID_HEIGHT = 0.56;
+    private const GRID_LEFT = 0.14;
+    private const GRID_TOP = 0.29;
+    private const GRID_WIDTH = 0.72;
+    private const GRID_HEIGHT = 0.60;
 
     private var _gate as PinGate;
     private var _onUnlocked as Method() as Void;
@@ -152,9 +152,9 @@ class PinView extends WatchUi.View {
             }
         }
         dc.setColor(titleColor, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX, height * 0.15, Graphics.FONT_XTINY, title, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(centerX, height * 0.13, Graphics.FONT_XTINY, title, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
-        drawDots(dc, centerX, (height * 0.24).toNumber());
+        drawDots(dc, centerX, (height * 0.22).toNumber());
 
         if (_touch) {
             drawKeypad(dc);
@@ -188,7 +188,7 @@ class PinView extends WatchUi.View {
         for (var i = 0; i < KEYS.size(); i++) {
             var x = width * GRID_LEFT + (i % 3) * cellWidth + cellWidth / 2;
             var y = height * GRID_TOP + (i / 3) * cellHeight + cellHeight / 2;
-            drawKey(dc, KEYS[i], x, y, cellHeight * 0.42, false);
+            drawKey(dc, KEYS[i], x, y, cellHeight * 0.46, false);
         }
     }
 
@@ -220,15 +220,15 @@ class PinView extends WatchUi.View {
             label = "OK";
         }
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x, y, isOk || isDelete ? Graphics.FONT_XTINY : Graphics.FONT_SMALL, label, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(x, y, isOk || isDelete ? Graphics.FONT_TINY : Graphics.FONT_MEDIUM, label, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 }
 
-class PinDelegate extends WatchUi.BehaviorDelegate {
+class PinDelegate extends WatchUi.InputDelegate {
     private var _view as PinView;
 
     public function initialize(view as PinView) {
-        BehaviorDelegate.initialize();
+        InputDelegate.initialize();
         _view = view;
     }
 
@@ -241,26 +241,27 @@ class PinDelegate extends WatchUi.BehaviorDelegate {
         return true;
     }
 
-    public function onSelect() as Boolean {
+    public function onKey(event as KeyEvent) as Boolean {
+        var key = event.getKey();
+        if (key == WatchUi.KEY_ENTER) {
+            if (_view.isTouch()) {
+                _view.press("ok");
+            } else {
+                _view.pressSelected();
+            }
+            return true;
+        }
         if (_view.isTouch()) {
-            _view.press("ok");
-        } else {
-            _view.pressSelected();
+            return false;
         }
-        return true;
-    }
-
-    public function onNextPage() as Boolean {
-        if (!_view.isTouch()) {
+        if (key == WatchUi.KEY_DOWN) {
             _view.cycle(1);
+            return true;
         }
-        return true;
-    }
-
-    public function onPreviousPage() as Boolean {
-        if (!_view.isTouch()) {
+        if (key == WatchUi.KEY_UP) {
             _view.cycle(-1);
+            return true;
         }
-        return true;
+        return false;
     }
 }

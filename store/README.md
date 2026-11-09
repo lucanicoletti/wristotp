@@ -13,11 +13,8 @@ The privacy policy and support pages live in `../site/` (GitHub Pages).
 
 ## 0. Before any store
 
-- [ ] Publish `../site/` with GitHub Pages:
-  - Create a public repo `lucanicoletti/wristotp` and push the contents of `site/` to it.
-  - Settings → Pages → deploy from the main branch, root folder.
-  - Check https://lucanicoletti.github.io/wristotp/privacy and `/support` load. The phone app links to both from the Guide tab.
-- [ ] Take store screenshots:
+- [x] Publish `../site/` with GitHub Pages: repo `lucanicoletti/wristotp-site`, served at https://lucanicoletti.github.io/wristotp-site/. The phone app links to `/privacy` and `/support` from its footer. When `site/` changes, copy the files into that repo and push.
+- [x] Take store screenshots (`screenshots/`, demo data). Watch screenshots for Connect IQ are still to do:
   - Watch: Connect IQ simulator, File → Save Screenshot.
   - Phone: iPhone 6.9" and 6.5", Android phone.
 
