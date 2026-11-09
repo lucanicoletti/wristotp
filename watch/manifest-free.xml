@@ -1,0 +1,22 @@
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+    <iq:application entry="WristOtpApp" id="c4cc401eebcc4caeab763d52f85af9af" launcherIcon="@Drawables.LauncherIcon" minApiLevel="4.0.0" name="@Strings.AppNameFree" type="watch-app" version="1.0.0">
+        <iq:products>
+            <iq:product id="epix2pro47mm"/>
+            <iq:product id="fenix7"/>
+            <iq:product id="fenix847mm"/>
+            <iq:product id="fr265"/>
+            <iq:product id="fr965"/>
+            <iq:product id="fr970"/>
+            <iq:product id="venu3"/>
+            <iq:product id="venu441mm"/>
+            <iq:product id="venu445mm"/>
+            <iq:product id="vivoactive6"/>
+        </iq:products>
+        <iq:permissions>
+            <iq:uses-permission id="Communications"/>
+        </iq:permissions>
+        <iq:languages>
+            <iq:language>eng</iq:language>
+        </iq:languages>
+    </iq:application>
+</iq:manifest>

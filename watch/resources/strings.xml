@@ -1,0 +1,18 @@
+<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <string id="AppName" scope="glance">WristOTP</string>
+    <string id="AppNameFree" scope="glance">WristOTP Free</string>
+    <string id="NoAccounts">No accounts</string>
+    <string id="SyncFromPhone">Sync from phone</string>
+    <string id="Synced">Synced $1$ accounts</string>
+    <string id="SyncedOne">Synced 1 account</string>
+    <string id="PinEnter">Enter PIN</string>
+    <string id="PinSet">Choose a PIN</string>
+    <string id="PinConfirm">Confirm PIN</string>
+    <string id="PinWrong">Wrong PIN</string>
+    <string id="PinTooShort">At least 4 digits</string>
+    <string id="PinMismatch">PINs didn't match</string>
+    <string id="PinWiped">Too many tries. Accounts erased.</string>
+    <string id="PinLocked">Locked. Try in $1$s</string>
+    <string id="PinButtonHint">Up/Down choose, Start enter</string>
+    <string id="Locked" scope="glance">Locked</string>
+</resources>
