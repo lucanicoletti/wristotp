@@ -17,6 +17,7 @@ junit = "4.13.2"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
+reorderable = "3.1.0"
 zxing = "3.5.4"
 
 [libraries]
@@ -39,6 +40,7 @@ connectiq-sdk = { module = "com.garmin.connectiq:ciq-companion-app-sdk", version
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

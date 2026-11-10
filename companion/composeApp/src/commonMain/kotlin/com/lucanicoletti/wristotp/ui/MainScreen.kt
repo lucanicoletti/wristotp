@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DragHandle
 import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -48,6 +51,8 @@ import com.lucanicoletti.wristotp.sync.SyncUiState
 import com.lucanicoletti.wristotp.sync.SyncViewModel
 import com.lucanicoletti.wristotp.sync.WatchEdition
 import com.lucanicoletti.wristotp.sync.WatchState
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 private const val PRIVACY_URL = "https://lucanicoletti.github.io/wristotp-site/privacy"
 private const val SUPPORT_URL = "https://lucanicoletti.github.io/wristotp-site/support"
@@ -66,8 +71,14 @@ fun MainScreen(viewModel: SyncViewModel) {
         }
         val edition = (watchState as? WatchState.Ready)?.edition
         val toSend = state.accountsToSend(edition?.accountLimit)
+        val listState = rememberLazyListState()
+        val reorderState = rememberReorderableLazyListState(listState) { from, to ->
+            val accounts = viewModel.state.value.accounts
+            viewModel.moveAccount(accounts.indexOfFirst { it.hashCode() == from.key }, accounts.indexOfFirst { it.hashCode() == to.key })
+        }
         Column(Modifier.fillMaxSize()) {
             LazyColumn(
+                state = listState,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.weight(1f).statusBarsPadding().padding(horizontal = 16.dp),
             ) {
@@ -79,6 +90,11 @@ fun MainScreen(viewModel: SyncViewModel) {
                     item {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             CapsLabel("Accounts (${state.accounts.size})", modifier = Modifier.weight(1f))
+                            if (state.accounts.size > 1) {
+                                TextButton(onClick = viewModel::sortAccounts) {
+                                    Text("A–Z", style = type.labelCaps, color = WristOtpColors.TextMuted)
+                                }
+                            }
                             TextButton(onClick = viewModel::clearAccounts) {
                                 Text("CLEAR", style = type.labelCaps, color = WristOtpColors.TextMuted)
                             }
@@ -96,7 +112,23 @@ fun MainScreen(viewModel: SyncViewModel) {
                             )
                         }
                     }
-                    items(state.accounts) { account -> AccountRow(account, sent = edition == null || account in toSend) }
+                    items(state.accounts, key = { it.hashCode() }) { account ->
+                        ReorderableItem(reorderState, key = account.hashCode()) { dragging ->
+                            AccountRow(
+                                account = account,
+                                sent = edition == null || account in toSend,
+                                dragging = dragging,
+                                handle = {
+                                    Icon(
+                                        Icons.Outlined.DragHandle,
+                                        contentDescription = "Reorder",
+                                        tint = WristOtpColors.TextMuted,
+                                        modifier = Modifier.draggableHandle().padding(8.dp),
+                                    )
+                                },
+                            )
+                        }
+                    }
                     items(state.unsupported) { account -> UnsupportedRow(account) }
                 }
                 if (state.showDeleteImageHint) {
@@ -174,8 +206,14 @@ private fun WatchCard(viewModel: SyncViewModel, state: SyncUiState, watchState: 
 }
 
 @Composable
-private fun AccountRow(account: OtpAccount, sent: Boolean) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.alpha(if (sent) 1f else 0.45f)) {
+private fun AccountRow(account: OtpAccount, sent: Boolean, dragging: Boolean, handle: @Composable () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (dragging) WristOtpColors.Raised else Color.Transparent)
+            .alpha(if (sent || dragging) 1f else 0.45f),
+    ) {
         Monogram(account.issuer.ifEmpty { account.name }, size = 40.dp)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
@@ -187,6 +225,7 @@ private fun AccountRow(account: OtpAccount, sent: Boolean) {
         if (!sent) {
             CapsLabel("Not sent")
         }
+        handle()
     }
 }
 

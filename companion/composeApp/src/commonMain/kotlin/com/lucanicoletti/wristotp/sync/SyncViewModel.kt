@@ -115,6 +115,22 @@ class SyncViewModel(
         _state.update { SyncUiState(pinRequired = it.pinRequired, lastSync = it.lastSync) }
     }
 
+    fun moveAccount(from: Int, to: Int) {
+        _state.update { state ->
+            if (from !in state.accounts.indices || to !in state.accounts.indices) return@update state
+            state.copy(accounts = state.accounts.toMutableList().apply { add(to, removeAt(from)) }, lastResult = null)
+        }
+    }
+
+    fun sortAccounts() {
+        _state.update { state ->
+            state.copy(
+                accounts = state.accounts.sortedWith(compareBy<OtpAccount> { it.issuer.ifEmpty { it.name }.lowercase() }.thenBy { it.name.lowercase() }),
+                lastResult = null,
+            )
+        }
+    }
+
     fun setPinRequired(required: Boolean) {
         settings.pinRequired = required
         _state.update { it.copy(pinRequired = required, lastResult = null) }

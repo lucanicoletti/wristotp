@@ -178,6 +178,37 @@ class SyncViewModelTest {
         assertEquals(false, viewModel.state.value.pinRequired)
     }
 
+    @Test
+    fun movedAccountIsSentFirst() = runTest(dispatcher) {
+        val freeBridge = FakeWatchBridge(WatchEdition.Free)
+        val viewModel = SyncViewModel(freeBridge)
+        viewModel.onImageScanned(listOf(BATCH_0, BATCH_1))
+        viewModel.moveAccount(1, 0)
+        assertEquals(listOf("Beta", "Alpha"), viewModel.state.value.accounts.map { it.issuer })
+
+        viewModel.send()
+        advanceUntilIdle()
+        assertEquals(listOf("Beta"), (freeBridge.sentMessages[1] as WatchMessage.Chunk).accounts.map { it["i"] })
+    }
+
+    @Test
+    fun moveOutsideTheListIsIgnored() {
+        val viewModel = SyncViewModel(bridge)
+        viewModel.onImageScanned(listOf(BATCH_0, BATCH_1))
+        viewModel.moveAccount(0, 5)
+        assertEquals(listOf("Alpha", "Beta"), viewModel.state.value.accounts.map { it.issuer })
+    }
+
+    @Test
+    fun sortOrdersByIssuerThenNameIgnoringCase() {
+        val viewModel = SyncViewModel(bridge)
+        viewModel.onScanned("otpauth://totp/zeta:demo?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+        viewModel.onScanned("otpauth://totp/Acme:work?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+        viewModel.onScanned("otpauth://totp/acme:home?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ")
+        viewModel.sortAccounts()
+        assertEquals(listOf("home", "work", "demo"), viewModel.state.value.accounts.map { it.name })
+    }
+
     private class FakeWatchBridge(edition: WatchEdition = WatchEdition.Full) : WatchBridge {
         override val state: StateFlow<WatchState> = MutableStateFlow(WatchState.Ready("fēnix 8", edition))
         var sentSyncId: Int? = null
