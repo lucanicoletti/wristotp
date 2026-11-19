@@ -20,13 +20,10 @@ sealed interface WatchState {
     data class Disconnected(val deviceName: String) : WatchState
     data class Checking(val deviceName: String) : WatchState
     data class AppNotInstalled(val deviceName: String) : WatchState
-    data class Ready(val deviceName: String, val edition: WatchEdition = WatchEdition.Full) : WatchState
+    data class Ready(val deviceName: String) : WatchState
 }
 
-enum class WatchEdition(val accountLimit: Int?) {
-    Full(50),
-    Free(1),
-}
+const val WATCH_ACCOUNT_LIMIT = 50
 
 sealed interface SyncResult {
     data object Confirmed : SyncResult

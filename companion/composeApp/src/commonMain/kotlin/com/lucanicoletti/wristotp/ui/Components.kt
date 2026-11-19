@@ -45,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.lucanicoletti.wristotp.sync.WatchEdition
 import com.lucanicoletti.wristotp.sync.WatchState
 
 val type: WristOtpType
@@ -101,13 +100,8 @@ fun WatchState.status(): WatchStatus = when (this) {
     WatchState.NoDevice -> WatchStatus(WristOtpColors.TextMuted, "No watch", "Choose your watch to get started", false)
     is WatchState.Disconnected -> WatchStatus(WristOtpColors.TextMuted, "Offline", "Not connected. Open Garmin Connect", false)
     is WatchState.Checking -> WatchStatus(WristOtpColors.Amber, "Searching", "Looking for WristOTP on the watch…", false)
-    is WatchState.AppNotInstalled -> WatchStatus(WristOtpColors.Red, "App missing", "Install WristOTP from the Connect IQ Store", false)
-    is WatchState.Ready -> WatchStatus(
-        WristOtpColors.Emerald,
-        "Ready",
-        if (edition == WatchEdition.Free) "Connected · WristOTP Free" else "Connected · WristOTP",
-        true,
-    )
+    is WatchState.AppNotInstalled -> WatchStatus(WristOtpColors.Red, "App missing", "Install WristOTP on the watch", false)
+    is WatchState.Ready -> WatchStatus(WristOtpColors.Emerald, "Ready", "Connected · WristOTP", true)
 }
 
 @Composable

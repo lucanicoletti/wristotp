@@ -38,7 +38,7 @@ data class SyncUiState(
     val pinRequired: Boolean = true,
     val lastSync: LastSync? = null,
 ) {
-    fun accountsToSend(limit: Int?): List<OtpAccount> = if (limit == null) accounts else accounts.take(limit)
+    fun accountsToSend(): List<OtpAccount> = accounts.take(WATCH_ACCOUNT_LIMIT)
 }
 
 @OptIn(ExperimentalTime::class)
@@ -141,7 +141,7 @@ class SyncViewModel(
         if (current.sending || current.accounts.isEmpty()) return
         val syncId = nextSyncId()
         val ready = watchBridge.state.value as? WatchState.Ready
-        val toSend = current.accountsToSend(ready?.edition?.accountLimit)
+        val toSend = current.accountsToSend()
         val messages = WatchProtocol.messages(toSend, syncId, pinRequired = current.pinRequired)
         _state.update { it.copy(sending = true, lastResult = null) }
         viewModelScope.launch {

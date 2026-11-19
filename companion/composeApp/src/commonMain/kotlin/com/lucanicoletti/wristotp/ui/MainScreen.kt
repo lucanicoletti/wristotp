@@ -49,7 +49,7 @@ import com.lucanicoletti.wristotp.scan.rememberImageQrImporter
 import com.lucanicoletti.wristotp.sync.SyncResult
 import com.lucanicoletti.wristotp.sync.SyncUiState
 import com.lucanicoletti.wristotp.sync.SyncViewModel
-import com.lucanicoletti.wristotp.sync.WatchEdition
+import com.lucanicoletti.wristotp.sync.WATCH_ACCOUNT_LIMIT
 import com.lucanicoletti.wristotp.sync.WatchState
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -69,8 +69,7 @@ fun MainScreen(viewModel: SyncViewModel) {
             ScanScreen(viewModel = viewModel, state = state, onImportImage = importImage)
             return@Surface
         }
-        val edition = (watchState as? WatchState.Ready)?.edition
-        val toSend = state.accountsToSend(edition?.accountLimit)
+        val toSend = state.accountsToSend()
         val listState = rememberLazyListState()
         val reorderState = rememberReorderableLazyListState(listState) { from, to ->
             val accounts = viewModel.state.value.accounts
@@ -100,14 +99,10 @@ fun MainScreen(viewModel: SyncViewModel) {
                             }
                         }
                     }
-                    if (edition != null && state.accounts.size > toSend.size) {
+                    if (state.accounts.size > toSend.size) {
                         item {
                             InfoBanner(
-                                text = if (edition == WatchEdition.Free) {
-                                    "WristOTP Free holds one account, so only the first is sent. WristOTP holds up to ${WatchEdition.Full.accountLimit}."
-                                } else {
-                                    "The watch holds up to ${edition.accountLimit} accounts, so only the first ${edition.accountLimit} are sent."
-                                },
+                                text = "The watch holds up to $WATCH_ACCOUNT_LIMIT accounts, so only the first $WATCH_ACCOUNT_LIMIT are sent.",
                                 accent = WristOtpColors.Amber,
                             )
                         }
@@ -116,7 +111,7 @@ fun MainScreen(viewModel: SyncViewModel) {
                         ReorderableItem(reorderState, key = account.hashCode()) { dragging ->
                             AccountRow(
                                 account = account,
-                                sent = edition == null || account in toSend,
+                                sent = account in toSend,
                                 dragging = dragging,
                                 handle = {
                                     Icon(

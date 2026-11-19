@@ -1,7 +1,9 @@
-TEAM_ID=4H584YVF57
+TEAM_ID=
 
 PRODUCT_NAME=WristOTP
 PRODUCT_BUNDLE_IDENTIFIER=com.lucanicoletti.wristotp
 
 CURRENT_PROJECT_VERSION=1
 MARKETING_VERSION=1.0
+
+#include? "Config.local.xcconfig"

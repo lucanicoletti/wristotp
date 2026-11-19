@@ -60,8 +60,8 @@ class IosWatchBridge(private val transport: IosWatchTransport) : WatchBridge, Io
         _state.value = WatchState.AppNotInstalled(deviceName)
     }
 
-    override fun onReady(deviceName: String, edition: WatchEdition) {
-        _state.value = WatchState.Ready(deviceName, edition)
+    override fun onReady(deviceName: String) {
+        _state.value = WatchState.Ready(deviceName)
     }
 
     override fun onMessage(payload: Any?) {

@@ -1,6 +1,5 @@
 <resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <string id="AppName" scope="glance">WristOTP</string>
-    <string id="AppNameFree" scope="glance">WristOTP Free</string>
     <string id="NoAccounts">No accounts</string>
     <string id="SyncFromPhone">Sync from phone</string>
     <string id="Synced">Synced $1$ accounts</string>

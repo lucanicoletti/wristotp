@@ -136,18 +136,7 @@ class SyncViewModelTest {
     }
 
     @Test
-    fun freeWatchGetsOnlyTheFirstAccount() = runTest(dispatcher) {
-        val freeBridge = FakeWatchBridge(WatchEdition.Free)
-        val viewModel = SyncViewModel(freeBridge)
-        viewModel.onImageScanned(listOf(BATCH_0, BATCH_1))
-        viewModel.send()
-        advanceUntilIdle()
-        assertEquals(WatchMessage.Begin(syncId = freeBridge.sentSyncId!!, total = 1, pinRequired = true), freeBridge.sentMessages.first())
-        assertEquals(listOf("Alpha"), (freeBridge.sentMessages[1] as WatchMessage.Chunk).accounts.map { it["i"] })
-    }
-
-    @Test
-    fun fullWatchGetsAtMostFiftyAccounts() = runTest(dispatcher) {
+    fun watchGetsAtMostFiftyAccounts() = runTest(dispatcher) {
         val viewModel = SyncViewModel(bridge)
         viewModel.onImageScanned((1..51).map { "otpauth://totp/Issuer$it:demo?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ" })
         assertEquals(51, viewModel.state.value.accounts.size)
@@ -180,15 +169,14 @@ class SyncViewModelTest {
 
     @Test
     fun movedAccountIsSentFirst() = runTest(dispatcher) {
-        val freeBridge = FakeWatchBridge(WatchEdition.Free)
-        val viewModel = SyncViewModel(freeBridge)
+        val viewModel = SyncViewModel(bridge)
         viewModel.onImageScanned(listOf(BATCH_0, BATCH_1))
         viewModel.moveAccount(1, 0)
         assertEquals(listOf("Beta", "Alpha"), viewModel.state.value.accounts.map { it.issuer })
 
         viewModel.send()
         advanceUntilIdle()
-        assertEquals(listOf("Beta"), (freeBridge.sentMessages[1] as WatchMessage.Chunk).accounts.map { it["i"] })
+        assertEquals(listOf("Beta", "Alpha"), (bridge.sentMessages[1] as WatchMessage.Chunk).accounts.map { it["i"] })
     }
 
     @Test
@@ -209,8 +197,8 @@ class SyncViewModelTest {
         assertEquals(listOf("home", "work", "demo"), viewModel.state.value.accounts.map { it.name })
     }
 
-    private class FakeWatchBridge(edition: WatchEdition = WatchEdition.Full) : WatchBridge {
-        override val state: StateFlow<WatchState> = MutableStateFlow(WatchState.Ready("fēnix 8", edition))
+    private class FakeWatchBridge : WatchBridge {
+        override val state: StateFlow<WatchState> = MutableStateFlow(WatchState.Ready("fēnix 8"))
         var sentSyncId: Int? = null
         var sentMessages: List<WatchMessage> = emptyList()
 

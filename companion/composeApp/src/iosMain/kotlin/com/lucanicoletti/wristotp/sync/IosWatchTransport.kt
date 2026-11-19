@@ -19,7 +19,7 @@ interface IosWatchTransportListener {
 
     fun onAppNotInstalled(deviceName: String)
 
-    fun onReady(deviceName: String, edition: WatchEdition)
+    fun onReady(deviceName: String)
 
     fun onMessage(payload: Any?)
 }

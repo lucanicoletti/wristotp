@@ -91,25 +91,20 @@ class ConnectIqWatchBridge(
     private fun selectDevice(selected: IQDevice) {
         device = selected
         _state.value = WatchState.Checking(selected.friendlyName)
-        findApp(selected, WATCH_APP_IDS.keys.toList())
+        findApp(selected)
     }
 
-    private fun findApp(selected: IQDevice, editions: List<WatchEdition>) {
-        val edition = editions.first()
-        connectIQ.getApplicationInfo(WATCH_APP_IDS.getValue(edition), selected, object : ConnectIQ.IQApplicationInfoListener {
+    private fun findApp(selected: IQDevice) {
+        connectIQ.getApplicationInfo(WATCH_APP_ID, selected, object : ConnectIQ.IQApplicationInfoListener {
             override fun onApplicationInfoReceived(info: IQApp) {
                 app = info
                 connectIQ.registerForAppEvents(selected, info) { _, _, payload, _ ->
                     payload.filterIsInstance<Map<*, *>>().forEach { replies.tryEmit(it) }
                 }
-                _state.value = WatchState.Ready(selected.friendlyName, edition)
+                _state.value = WatchState.Ready(selected.friendlyName)
             }
 
             override fun onApplicationNotInstalled(applicationId: String) {
-                if (editions.size > 1) {
-                    findApp(selected, editions.drop(1))
-                    return
-                }
                 app = null
                 _state.value = WatchState.AppNotInstalled(selected.friendlyName)
             }
@@ -130,10 +125,7 @@ class ConnectIqWatchBridge(
         }
 
     private companion object {
-        val WATCH_APP_IDS = mapOf(
-            WatchEdition.Full to "5bdabd0de07e48e1a7c103ee7a3d006c",
-            WatchEdition.Free to "c4cc401eebcc4caeab763d52f85af9af",
-        )
+        const val WATCH_APP_ID = "5bdabd0de07e48e1a7c103ee7a3d006c"
         const val ACK_TIMEOUT_MILLIS = 15_000L
     }
 }
